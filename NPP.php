@@ -11,9 +11,13 @@ function priorityScheduling($jobs)
         }
     }
 
-// Sort jobs by priority only
+   // Sort jobs based on arrival time and priority
     usort($jobs, function ($a, $b) {
-      return $a['arrivalTime'] - $b['arrivalTime'];
+    if ($a['arrivalTime'] == $b['arrivalTime']) {
+        // If arrival times are equal, compare priorities
+        return $a['priority'] - $b['priority'];
+    }
+    return $a['arrivalTime'] - $b['arrivalTime'];
     });
 
 
@@ -35,6 +39,8 @@ function priorityScheduling($jobs)
         // Ensure waiting time is non-negative
         $waitingTime[$i] = max(0, $waitingTime[$i]);
     }
+
+
     // Calculate averages
     $averageTurnaroundTime = array_sum($turnaroundTime) / $n;
     $averageWaitingTime = array_sum($waitingTime) / $n;
