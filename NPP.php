@@ -13,7 +13,7 @@ function priorityScheduling($jobs)
 
 // Sort jobs by priority only
     usort($jobs, function ($a, $b) {
-        return $a['priority'] - $b['priority'];
+      return $a['arrivalTime'] - $b['arrivalTime'];
     });
 
 
@@ -26,11 +26,15 @@ function priorityScheduling($jobs)
     $waitingTime[0] = $turnaroundTime[0] - $jobs[0]['burstTime'];
 
     for ($i = 1; $i < $n; $i++) {
-        $finishTime[$i] = $finishTime[$i - 1] + $jobs[$i]['burstTime'];
+        $finishTime[$i] = max($jobs[$i]['arrivalTime'], $finishTime[$i - 1]) + $jobs[$i]['burstTime'];
         $turnaroundTime[$i] = $finishTime[$i] - $jobs[$i]['arrivalTime'];
+        
+        // Corrected: Waiting time is the difference between Turnaround time and Burst time
         $waitingTime[$i] = $turnaroundTime[$i] - $jobs[$i]['burstTime'];
-    }
 
+        // Ensure waiting time is non-negative
+        $waitingTime[$i] = max(0, $waitingTime[$i]);
+    }
     // Calculate averages
     $averageTurnaroundTime = array_sum($turnaroundTime) / $n;
     $averageWaitingTime = array_sum($waitingTime) / $n;
