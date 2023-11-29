@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="reset.css">
+
 <?php
 class Process {
     public $pid;
@@ -96,8 +99,9 @@ $avg_waiting_time = $total_waiting_time / $num_processes;
 $avg_response_time = $total_response_time / $num_processes;
 
 // Output the results as needed
-echo "SRTF";
-echo "<table border='1'>";
+echo '<div class="table-container table-border">';
+echo "<h1>Shortest Remaining Time First</h1>";
+echo "<table>";
 echo "<tr>";
 echo "<th>Process</th><th>Arrival Time</th><th>Burst Time</th><th>Start Time</th><th>Completion Time</th><th>Turnaround Time</th><th>Waiting Time</th>";
 echo "</tr>";
@@ -115,8 +119,12 @@ foreach ($processes as $process) {
 }
 
 echo "</table>";
-echo "Average Turnaround Time = " . $avg_turnaround_time . "<br>";
-echo "Average Waiting Time = " . $avg_waiting_time . "<br>";
+
+// Output
+echo '<p class="muted">Average Turnaround Time: ' . $avg_turnaround_time . '</p>' ;
+echo '<p class="muted">Average Waiting Time: ' . $avg_waiting_time . '</p>' ;
+
+echo "</div>";
 
 } 
 else {
@@ -127,10 +135,13 @@ else {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>SRTF Scheduler</title>
 </head>
 <body>
-<h1>SRTF Scheduler</h1>
+
+<div class="form-container table-border">
+<h2 class="left-fullw">SRTF Scheduler</h2>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
     <label for="arrival_times">Arrival Times:</label>
     <input type="text" name="arrival_times" required>
@@ -140,6 +151,7 @@ else {
     <br>
     <input type="submit" value="Submit">
 </form>
+</div>
 </body>
 </html>
 <?php } ?>

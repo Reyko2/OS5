@@ -31,17 +31,20 @@ function priorityScheduling($jobs)
     $averageWaitingTime = array_sum($waitingTime) / $n;
 
     // Output the table
-    echo "<p>NPP</p>";
-    echo "<table border='1'>";
+    echo '<div class="table-container table-border">';
+    echo "<h1>Non-Preemptive Priority</h1>";
+    echo "<table>";
     echo "<tr><th>Job</th><th>Arrival Time</th><th>Burst Time</th><th>Finish Time</th><th>Turnaround Time</th><th>Waiting Time</th><th>Priority</th></tr>";
     for ($i = 0; $i < $n; $i++) {
         echo "<tr><td>{$jobs[$i]['job']}</td><td>{$jobs[$i]['arrivalTime']}</td><td>{$jobs[$i]['burstTime']}</td><td>{$finishTime[$i]}</td><td>{$turnaroundTime[$i]}</td><td>{$waitingTime[$i]}</td><td>{$jobs[$i]['priority']}</td></tr>";
     }
     echo "</table>";
 
-    // Output averages
-    echo "<p>Average Turnaround Time: {$averageTurnaroundTime}</p>";
-    echo "<p>Average Waiting Time: {$averageWaitingTime}</p>";
+     // Output averages
+    echo '<p class="muted">Average Turnaround Time: ' . $averageTurnaroundTime . '</p>' ;
+    echo '<p class="muted">Average Waiting Time: ' . $averageWaitingTime . '</p>' ;
+    echo "</div>";
+
 }
 
 // Validate and process the form data
