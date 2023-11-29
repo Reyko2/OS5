@@ -3,23 +3,13 @@ function priorityScheduling($jobs)
 {
     $n = count($jobs);
 
-      // Check if any burst time is zero
-      foreach ($jobs as $job) {
-        if ($job['arrivalTime'] < 0 || $job['burstTime'] < 0 || $job['priority'] < 0) {
-            echo "Error: Invalid input.";
-            return;
-        }
-    }
-
-   // Sort jobs based on arrival time and priority
+    // Sort jobs by priority and then by arrival time
     usort($jobs, function ($a, $b) {
-    if ($a['arrivalTime'] == $b['arrivalTime']) {
-        // If arrival times are equal, compare priorities
+        if ($a['priority'] == $b['priority']) {
+            return $a['arrivalTime'] - $b['arrivalTime'];
+        }
         return $a['priority'] - $b['priority'];
-    }
-    return $a['arrivalTime'] - $b['arrivalTime'];
     });
-
 
     $finishTime = array_fill(0, $n, 0);
     $turnaroundTime = array_fill(0, $n, 0);
@@ -32,21 +22,16 @@ function priorityScheduling($jobs)
     for ($i = 1; $i < $n; $i++) {
         $finishTime[$i] = max($jobs[$i]['arrivalTime'], $finishTime[$i - 1]) + $jobs[$i]['burstTime'];
         $turnaroundTime[$i] = $finishTime[$i] - $jobs[$i]['arrivalTime'];
-        
-        // Corrected: Waiting time is the difference between Turnaround time and Burst time
         $waitingTime[$i] = $turnaroundTime[$i] - $jobs[$i]['burstTime'];
-
-        // Ensure waiting time is non-negative
         $waitingTime[$i] = max(0, $waitingTime[$i]);
     }
-
 
     // Calculate averages
     $averageTurnaroundTime = array_sum($turnaroundTime) / $n;
     $averageWaitingTime = array_sum($waitingTime) / $n;
 
     // Output the table
-    echo "NPP";
+    echo "<p>NPP</p>";
     echo "<table border='1'>";
     echo "<tr><th>Job</th><th>Arrival Time</th><th>Burst Time</th><th>Finish Time</th><th>Turnaround Time</th><th>Waiting Time</th><th>Priority</th></tr>";
     for ($i = 0; $i < $n; $i++) {
@@ -76,7 +61,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $priorities = preg_split("/[\s,]+/", $priorities);
     }
 
-
     // Validate input counts
     if (count($arrivalTimes) == count($burstTimes) && count($burstTimes) == count($priorities)) {
         $jobs = [];
@@ -97,9 +81,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Error: The number of arrival times, burst times, and priorities must be the same.";
     }
 }
-
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
