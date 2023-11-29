@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="global.css">
+<link rel="stylesheet" href="reset.css">
+
 <?php
 function priorityScheduling($jobs)
 {
@@ -92,6 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Priority Scheduling</title>
 </head>
 <body>
+    <div class="form-container table-border">
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
         <label for="arrival_times">Arrival Times:</label>
         <input type="text" name="arrival_times" required><br>
@@ -104,6 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <input type="submit" value="Submit">
     </form>
+    </div>
 </body>
 </html>
 
