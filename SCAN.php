@@ -17,12 +17,8 @@
         <label for="seekRate">Seek Rate:</label>
         <input type="number" name="seekRate" required><br>
 
-        <label for="numRequests">Number of Requests (up to 10):</label>
-        <input type="number" name="numRequests" required><br>
-
-        <div id="requestsContainer"></div>
-
-        <button type="button" onclick="addRequest()">Add Request</button><br>
+        <label for="requests">Requests (space or comma-separated):</label>
+        <input type="text" name="requests" required><br>
 
         <button type="submit" name="calculate">Calculate</button>
     </form>
@@ -32,13 +28,11 @@
         $currentPosition = isset($_POST["currentPosition"]) ? (int)$_POST["currentPosition"] : 0;
         $trackSize = isset($_POST["trackSize"]) ? (int)$_POST["trackSize"] : 0;
         $seekRate = isset($_POST["seekRate"]) ? (int)$_POST["seekRate"] : 0;
-        $numRequests = isset($_POST["numRequests"]) ? (int)$_POST["numRequests"] : 0;
+        $requestsString = isset($_POST["requests"]) ? $_POST["requests"] : '';
 
-        $requests = [];
-        for ($i = 1; $i <= $numRequests; $i++) {
-            $requestValue = isset($_POST["request$i"]) ? (int)$_POST["request$i"] : 0;
-            $requests[] = $requestValue;
-        }
+        // Parse requests from the input string
+        $requests = preg_split('/[\s,]+/', $requestsString, -1, PREG_SPLIT_NO_EMPTY);
+        $requests = array_map('intval', $requests);
 
         // Perform SCAN algorithm calculation
         $sortedRequests = $requests;
@@ -66,31 +60,5 @@
         echo "</div>";
     }
     ?>
-
-    <script>
-        let requestCount = 1;
-
-        function addRequest() {
-            if (requestCount <= 10) {
-                const container = document.getElementById("requestsContainer");
-
-                const label = document.createElement("label");
-                label.textContent = `Request ${requestCount}:`;
-
-                const input = document.createElement("input");
-                input.type = "number";
-                input.name = `request${requestCount}`;
-                input.required = true;
-
-                container.appendChild(label);
-                container.appendChild(input);
-                container.appendChild(document.createElement("br"));
-
-                requestCount++;
-            } else {
-                alert("Maximum limit of 10 requests reached");
-            }
-        }
-    </script>
 </body>
 </html>
