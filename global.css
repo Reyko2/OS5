@@ -16,6 +16,11 @@ h2 {
     font-weight: 600;
 }
 
+.left-fullw {
+    width: 100%;
+    text-align: left;
+}
+
 .muted {
     font-size: .875rem;
     line-height: 1.25rem;
@@ -61,14 +66,16 @@ table, .muted {
     margin: 1em 0 1em 0;
 }
 
-/* NPP CSS */
+/* INPUT CSS */
 .form-container {
     padding: 2em;
+    max-width: 65%;
     width: fit-content;
     margin: 1em auto 1em auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: nowrap;
     flex-direction: column;
 }
 
@@ -88,6 +95,16 @@ input[type=text]{
     color: #000;
 }
 
+input[type=number]{
+    width: 100%;
+    padding: 0.65em;
+    text-align: left;
+    border-radius: 0.55em;
+    background-color: #fff;
+    border: 1px solid rgb(228, 228, 231);
+    color: #000;
+}
+
 input[type=submit]{
     width: 100%;
     padding: 0.65em;
@@ -96,4 +113,59 @@ input[type=submit]{
     background-color: black;
     color: #fff;
     margin: 1em 0 1em 0;
+}
+
+/* Scan CSS */
+
+.scan-container {
+    padding: 2em;
+    max-width: 65%;
+    margin: 1em auto 1em auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}
+
+.seek-operations {
+    width: 150px;
+    height: 150px;
+    padding: 0.65em;
+    text-align: left;
+    border-radius: 0.55em;
+    background-color: #fff;
+    border: 1px solid rgb(228, 228, 231);
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.seek-operations p {
+    width: 100%;
+    text-align: center;
+    font-size: 0.875rem;
+    color: rgb(113, 113, 122);
+}
+
+.seek-operations h2 {
+    text-align: center;
+}
+
+.seek-sequence {
+    width: 100%;
+    padding: 0.65em;
+    text-align: left;
+    border-radius: 0.55em;
+    background-color: #fff;
+    border: 1px solid rgb(228, 228, 231);
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1em;
 }

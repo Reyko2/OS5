@@ -3,25 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="reset.css">
     <title>Disk Scheduling Solver</title>
 </head>
 <body>
-    <h1>Disk Scheduling Solver</h1>
+    <div class="form-container table-border">
+    <h2 class="left-fullw">Disk Scheduling Solver</h2>
     <form id="diskForm" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
         <label for="currentPosition">Current Position:</label>
-        <input type="number" name="currentPosition" required><br>
+        <input type="number" name="currentPosition" required>
 
         <label for="trackSize">Track Size:</label>
-        <input type="number" name="trackSize" required><br>
+        <input type="number" name="trackSize" required>
 
         <label for="seekRate">Seek Rate:</label>
-        <input type="number" name="seekRate" required><br>
+        <input type="number" name="seekRate" required>
 
         <label for="requests">Requests (space or comma-separated):</label>
-        <input type="text" name="requests" required><br>
-
-        <button type="submit" name="calculate">Calculate</button>
+        <input type="text" name="requests" required>
+        <input type="submit" name="calculate">
     </form>
+</div>
 
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['calculate'])) {
@@ -112,13 +115,45 @@
             $seekTime = $totalHeadMovement / $GLOBALS['seekRate'];
 
             // Display results
-            echo "<p>Total number of seek operations = $seek_count</p>";
-            echo "<p>Total head movement: $totalHeadMovement tracks</p>";
-            echo "<p>Seek time: $seekTime seconds</p>";
-            echo "<p>Seek Sequence is: </p>";
+            // start main div
+            echo '<div>';
+            
+            // start container
+            echo '<div class="scan-container table-border">';
+
+            echo '<div class="seek-operations">
+            <p class="left-fullw">Total number of seek operations</p>
+            <h2 class="left-fullw">'. $seek_count. '</h2>
+            </div>';
+
+            echo '<div class="seek-operations">
+            <p class="left-fullw">Total head movement</p>
+            <h2 class="left-fullw">'. $totalHeadMovement. '</h2>
+            </div>';
+
+            echo '<div class="seek-operations">
+            <p class="left-fullw">Seek time</p>
+            <h2 class="left-fullw">'. $seekTime. '</h2>
+            </div>';
+
+            // end container        
+            echo '</div>';
+
+            // another container
+            echo '<div class="scan-container table-border">';
+            // echo '<div class="seek-operations">';
+            echo '<p class="left-fullw">Seek Sequence is: </p>';
+
             for ($i = 0; $i < count($seek_sequence); $i++) {
-                echo "<p>$seek_sequence[$i]</p>";
+                echo '<div class="seek-sequence">' . $seek_sequence[$i]. '</div>';
             }
+            // echo '</div>';
+
+            // end container
+            echo '</div>';
+
+            // end main div
+            echo '</div>'; 
         }
 
         // Display results
