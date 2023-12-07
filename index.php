@@ -3,32 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="reset.css">
     <title>Menu Page</title>
     <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-        }
-
-        #myForm {
-            margin-top: 20px; /* Adjust the margin as needed */
-            text-align: center;
-        }
     </style>
 </head>
 <body>
 
+<div class="form-container">
 <form id="myForm">
     <label for="algorithm">Select Algorithm:</label>
-    <select id="algorithm" name="algorithm" onchange="loadCode()">
+    <select class="table-border" id="algorithm" name="algorithm" onchange="loadCode()">
         <option value="">Select an option</option>
         <option value="SCAN">SCAN</option>
         <option value="SRTF">SRTF</option>
         <option value="NPP">NPP</option>
     </select>
 </form>
+</div>
+
 
 <div id="codeContainer">
     <!-- Code will be loaded here -->

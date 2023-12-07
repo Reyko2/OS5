@@ -85,6 +85,11 @@ label {
     font-weight: 500;
 }
 
+select {
+    padding: 1em;
+    cursor: pointer;
+}
+
 input[type=text]{
     width: 100%;
     padding: 0.65em;
