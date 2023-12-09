@@ -140,6 +140,18 @@ else {
 </head>
 <body>
 
+<div class="form-container">
+<form id="myForm">
+    <label for="algorithm">Select Algorithm:</label>
+    <select class="table-border" id="algorithm" name="algorithm" onchange="loadCode()">
+        <option value="">Select an option</option>
+        <option value="SCAN">SCAN</option>
+        <option value="SRTF">SRTF</option>
+        <option value="NPP">NPP</option>
+    </select>
+</form>
+</div>
+
 <div class="form-container table-border">
 <h2 class="left-fullw">SRTF Scheduler</h2>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
