@@ -14,7 +14,7 @@
 <div class="form-container">
 <form id="myForm">
     <label for="algorithm">Select Algorithm:</label>
-    <select class="table-border" id="algorithm" name="algorithm" onchange="loadCode()">
+    <select class="table-border" id="algorithm" name="algorithm" onchange="javascript:handleSelect(this)">
         <option value="">Select an option</option>
         <option value="SCAN">SCAN</option>
         <option value="SRTF">SRTF</option>
@@ -28,7 +28,7 @@
     <!-- Code will be loaded here -->
 </div>
 
-<script>
+<!-- <script>
     var lastSelectedAlgorithm = "";
 
     function loadCode() {
@@ -69,7 +69,14 @@
         xhr.send(formData);
         return false; // Prevent the default form submission
     }
-</script>
+</script> -->
+
+<script type="text/javascript">
+        function handleSelect(elm)
+        {
+            window.location = elm.value+".php";
+        }
+    </script>
 
 
 </body>

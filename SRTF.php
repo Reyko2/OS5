@@ -99,6 +99,20 @@ $avg_waiting_time = $total_waiting_time / $num_processes;
 $avg_response_time = $total_response_time / $num_processes;
 
 // Output the results as needed
+
+echo '<div class="form-container">
+<form id="myForm">
+    <label for="algorithm">Select Algorithm:</label>
+    <select class="table-border" id="algorithm" name="algorithm" onchange="loadCode()">
+        <option value="">Select an option</option>
+        <option value="SCAN">SCAN</option>
+        <option value="SRTF">SRTF</option>
+        <option value="NPP">NPP</option>
+    </select>
+</form>
+</div>
+';
+
 echo '<div class="table-container table-border">';
 echo "<h1>Shortest Remaining Time First</h1>";
 echo "<table>";
@@ -143,10 +157,10 @@ else {
 <div class="form-container">
 <form id="myForm">
     <label for="algorithm">Select Algorithm:</label>
-    <select class="table-border" id="algorithm" name="algorithm" onchange="loadCode()">
+    <select class="table-border" id="algorithm" name="algorithm" onchange="javascript:handleSelect(this)">
         <option value="">Select an option</option>
         <option value="SCAN">SCAN</option>
-        <option value="SRTF">SRTF</option>
+        <option value="SRTF" selected>SRTF</option>
         <option value="NPP">NPP</option>
     </select>
 </form>
@@ -164,6 +178,13 @@ else {
     <input type="submit" value="Submit">
 </form>
 </div>
+
+<script type="text/javascript">
+        function handleSelect(elm)
+        {
+            window.location = elm.value+".php";
+        }
+    </script>
 </body>
 </html>
 <?php } ?>

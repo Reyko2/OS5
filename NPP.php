@@ -11,11 +11,11 @@
 <div class="form-container">
 <form id="myForm">
     <label for="algorithm">Select Algorithm:</label>
-    <select class="table-border" id="algorithm" name="algorithm" onchange="loadCode()">
+    <select class="table-border" id="algorithm" name="algorithm" onchange="javascript:handleSelect(this)">
         <option value="">Select an option</option>
         <option value="SCAN">SCAN</option>
         <option value="SRTF">SRTF</option>
-        <option value="NPP">NPP</option>
+        <option value="NPP" selected>NPP</option>
     </select>
 </form>
 </div>
@@ -34,6 +34,14 @@
         <input type="submit" value="Submit">
     </form>
     </div>
+
+    <script type="text/javascript">
+        function handleSelect(elm)
+        {
+            window.location = elm.value+".php";
+        }
+    </script>
+
 </body>
 </html>
 <?php
