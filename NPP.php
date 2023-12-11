@@ -57,6 +57,7 @@ function priorityScheduling($jobs)
         return $a['priority'] - $b['priority'];
     });
 
+    // Array initialization for storing finish, turnaround, and waiting times
     $finishTime = array_fill(0, $n, 0);
     $turnaroundTime = array_fill(0, $n, 0);
     $waitingTime = array_fill(0, $n, 0);
@@ -65,6 +66,7 @@ function priorityScheduling($jobs)
     $turnaroundTime[0] = $finishTime[0] - $jobs[0]['arrivalTime'];
     $waitingTime[0] = $turnaroundTime[0] - $jobs[0]['burstTime'];
 
+    // Loop for iterating leftover jobs
     for ($i = 1; $i < $n; $i++) {
         $finishTime[$i] = max($jobs[$i]['arrivalTime'], $finishTime[$i - 1]) + $jobs[$i]['burstTime'];
         $turnaroundTime[$i] = $finishTime[$i] - $jobs[$i]['arrivalTime'];

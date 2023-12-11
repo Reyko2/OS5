@@ -1,7 +1,25 @@
 <link rel="stylesheet" href="global.css">
-    <link rel="stylesheet" href="reset.css">
+<link rel="stylesheet" href="reset.css">
 
+<div class="form-container">
+<form id="myForm">
+    <label for="algorithm">Select Algorithm:</label>
+    <select class="table-border" id="algorithm" name="algorithm" onchange="javascript:handleSelect(this)">
+        <option value="">Select an option</option>
+        <option value="SCAN">SCAN</option>
+        <option value="SRTF" selected>SRTF</option>
+        <option value="NPP">NPP</option>
+    </select>
+</form>
+</div>
+<script type="text/javascript">
+        function handleSelect(elm)
+        {
+            window.location = elm.value+".php";
+        }
+    </script> 
 <?php
+
 class Process {
     public $pid;
     public $arrival_time;
@@ -100,19 +118,6 @@ $avg_response_time = $total_response_time / $num_processes;
 
 // Output the results as needed
 
-echo '<div class="form-container">
-<form id="myForm">
-    <label for="algorithm">Select Algorithm:</label>
-    <select class="table-border" id="algorithm" name="algorithm" onchange="loadCode()">
-        <option value="">Select an option</option>
-        <option value="SCAN">SCAN</option>
-        <option value="SRTF">SRTF</option>
-        <option value="NPP">NPP</option>
-    </select>
-</form>
-</div>
-';
-
 echo '<div class="table-container table-border">';
 echo "<h1>Shortest Remaining Time First</h1>";
 echo "<table>";
@@ -140,6 +145,7 @@ echo '<p class="muted">Average Waiting Time: ' . $avg_waiting_time . '</p>' ;
 
 echo "</div>";
 
+
 } 
 else {
 // Display the form
@@ -149,22 +155,9 @@ else {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>SRTF Scheduler</title>
 </head>
 <body>
-
-<div class="form-container">
-<form id="myForm">
-    <label for="algorithm">Select Algorithm:</label>
-    <select class="table-border" id="algorithm" name="algorithm" onchange="javascript:handleSelect(this)">
-        <option value="">Select an option</option>
-        <option value="SCAN">SCAN</option>
-        <option value="SRTF" selected>SRTF</option>
-        <option value="NPP">NPP</option>
-    </select>
-</form>
-</div>
 
 <div class="form-container table-border">
 <h2 class="left-fullw">SRTF Scheduler</h2>
@@ -179,12 +172,7 @@ else {
 </form>
 </div>
 
-<script type="text/javascript">
-        function handleSelect(elm)
-        {
-            window.location = elm.value+".php";
-        }
-    </script>
+
 </body>
 </html>
 <?php } ?>

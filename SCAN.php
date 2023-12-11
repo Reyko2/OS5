@@ -178,7 +178,7 @@
         {
             window.location = elm.value+".php";
         }
-    </script>
+</script>
 
 </body>
 </html>
