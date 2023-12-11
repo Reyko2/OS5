@@ -1,139 +1,216 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="global.css">
-    <link rel="stylesheet" href="reset.css">
-    <title>Priority Scheduling</title>
-</head>
-<body>
-<div class="form-container">
-<form id="myForm">
-    <label for="algorithm">Select Algorithm:</label>
-    <select class="table-border" id="algorithm" name="algorithm" onchange="javascript:handleSelect(this)">
-        <option value="">Select an option</option>
-        <option value="SCAN">SCAN</option>
-        <option value="SRTF">SRTF</option>
-        <option value="NPP" selected>NPP</option>
-    </select>
-</form>
-</div>
-
-    <div class="form-container table-border">
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-        <label for="arrival_times">Arrival Times:</label>
-        <input type="text" name="arrival_times" required><br>
-
-        <label for="burst_times">Burst Times:</label>
-        <input type="text" name="burst_times" required><br>
-
-        <label for="priorities">Priorities:</label>
-        <input type="text" name="priorities"><br>
-
-        <input type="submit" value="Submit">
-    </form>
-    </div>
-
-    <script type="text/javascript">
-        function handleSelect(elm)
-        {
-            window.location = elm.value+".php";
-        }
-    </script>
-
-</body>
-</html>
 <?php
-function priorityScheduling($jobs)
-{
-    $n = count($jobs);
 
-    // Sort jobs by priority and then by arrival time
-    usort($jobs, function ($a, $b) {
-        if ($a['priority'] == $b['priority']) {
-            return $a['arrivalTime'] - $b['arrivalTime'];
-        }
-        return $a['priority'] - $b['priority'];
+function npp($arrivalTime, $burstTime, $priorities) {
+    // Assume a default priority value of 1 for empty priorities
+    $priorities = array_map(function ($priority) {
+        return empty($priority) ? 1 : $priority;
+    }, $priorities);
+
+    // Validate that all three arrays have the same number of elements when priorities are not empty
+    if (!empty($priorities) && (count($arrivalTime) !== count($burstTime) || count($burstTime) !== count($priorities))) {
+        die("Error: Number of elements in Arrival Time, Burst Time, and Priorities should match.");
+    }
+
+    $processesInfo = array_map(function ($item, $index) use ($arrivalTime, $burstTime, $priorities) {
+        return [
+            'job' => strtoupper(base_convert($index + 10, 10, 36)),
+            'at' => $item,
+            'bt' => $burstTime[$index],
+            'priority' => $priorities[$index],
+        ];
+    }, $arrivalTime, array_keys($arrivalTime));
+    
+    usort($processesInfo, function ($process1, $process2) {
+        if ($process1['at'] > $process2['at']) return 1;
+        if ($process1['at'] < $process2['at']) return -1;
+        if ($process1['priority'] > $process2['priority']) return 1;
+        if ($process1['priority'] < $process2['priority']) return -1;
+        return 0;
     });
 
-    // Array initialization for storing finish, turnaround, and waiting times
-    $finishTime = array_fill(0, $n, 0);
-    $turnaroundTime = array_fill(0, $n, 0);
-    $waitingTime = array_fill(0, $n, 0);
+    $finishTime = [];
+    $ganttChartInfo = [];
 
-    $finishTime[0] = $jobs[0]['arrivalTime'] + $jobs[0]['burstTime'];
-    $turnaroundTime[0] = $finishTime[0] - $jobs[0]['arrivalTime'];
-    $waitingTime[0] = $turnaroundTime[0] - $jobs[0]['burstTime'];
+    $solvedProcessesInfo = [];
+    $readyQueue = [];
+    $finishedJobs = [];
 
-    // Loop for iterating leftover jobs
-    for ($i = 1; $i < $n; $i++) {
-        $finishTime[$i] = max($jobs[$i]['arrivalTime'], $finishTime[$i - 1]) + $jobs[$i]['burstTime'];
-        $turnaroundTime[$i] = $finishTime[$i] - $jobs[$i]['arrivalTime'];
-        $waitingTime[$i] = $turnaroundTime[$i] - $jobs[$i]['burstTime'];
-        $waitingTime[$i] = max(0, $waitingTime[$i]);
+    foreach ($processesInfo as $i => $process) {
+        if ($i === 0) {
+            $readyQueue[] = $process;
+            $finishTime[] = $process['at'] + $process['bt'];
+            $solvedProcessesInfo[] = [
+                'job' => $process['job'],
+                'at' => $process['at'],
+                'bt' => $process['bt'],
+                'priority' => $process['priority'],
+                'ft' => $finishTime[0],
+                'tat' => $finishTime[0] - $process['at'],
+                'wat' => $finishTime[0] - $process['at'] - $process['bt'],
+            ];
+
+            foreach ($processesInfo as $p) {
+                if ($p['at'] <= $finishTime[0] && !in_array($p, $readyQueue)) {
+                    $readyQueue[] = $p;
+                }
+            }
+
+            array_shift($readyQueue);
+            $finishedJobs[] = $process;
+
+            $ganttChartInfo[] = [
+                'job' => $process['job'],
+                'start' => $process['at'],
+                'stop' => $finishTime[0],
+            ];
+        } else {
+            if (empty($readyQueue) && count($finishedJobs) !== count($processesInfo)) {
+                $unfinishedJobs = array_filter($processesInfo, function ($p) use ($finishedJobs) {
+                    return !in_array($p, $finishedJobs);
+                });
+                usort($unfinishedJobs, function ($a, $b) {
+                    if ($a['at'] > $b['at']) return 1;
+                    if ($a['at'] < $b['at']) return -1;
+                    if ($a['priority'] > $b['priority']) return 1;
+                    if ($a['priority'] < $b['priority']) return -1;
+                    return 0;
+                });
+                $readyQueue[] = $unfinishedJobs[0];
+            }
+
+            $rqSortedByPriority = $readyQueue;
+            usort($rqSortedByPriority, function ($a, $b) {
+                if ($a['priority'] > $b['priority']) return 1;
+                if ($a['priority'] < $b['priority']) return -1;
+                if ($a['at'] > $b['at']) return 1;
+                if ($a['at'] < $b['at']) return -1;
+                return 0;
+            });
+
+            $processToExecute = $rqSortedByPriority[0];
+            $previousFinishTime = end($finishTime);
+
+            if ($processToExecute['at'] > $previousFinishTime) {
+                $finishTime[] = $processToExecute['at'] + $processToExecute['bt'];
+                $newestFinishTime = end($finishTime);
+                $ganttChartInfo[] = [
+                    'job' => $processToExecute['job'],
+                    'start' => $processToExecute['at'],
+                    'stop' => $newestFinishTime,
+                ];
+            } else {
+                $finishTime[] = $previousFinishTime + $processToExecute['bt'];
+                $newestFinishTime = end($finishTime);
+                $ganttChartInfo[] = [
+                    'job' => $processToExecute['job'],
+                    'start' => $previousFinishTime,
+                    'stop' => $newestFinishTime,
+                ];
+            }
+
+            $solvedProcessesInfo[] = [
+                'job' => $processToExecute['job'],
+                'at' => $processToExecute['at'],
+                'bt' => $processToExecute['bt'],
+                'priority' => $processToExecute['priority'],
+                'ft' => $newestFinishTime,
+                'tat' => $newestFinishTime - $processToExecute['at'],
+                'wat' => $newestFinishTime - $processToExecute['at'] - $processToExecute['bt'],
+            ];
+
+            foreach ($processesInfo as $p) {
+                if ($p['at'] <= $newestFinishTime && !in_array($p, $readyQueue) && !in_array($p, $finishedJobs)) {
+                    $readyQueue[] = $p;
+                }
+            }
+
+            $indexToRemove = array_search($processToExecute, $readyQueue);
+            if ($indexToRemove !== false) {
+                array_splice($readyQueue, $indexToRemove, 1);
+            }
+
+            $finishedJobs[] = $processToExecute;
+        }
     }
 
-    // Calculate averages
-    $averageTurnaroundTime = array_sum($turnaroundTime) / $n;
-    $averageWaitingTime = array_sum($waitingTime) / $n;
+    usort($solvedProcessesInfo, function ($obj1, $obj2) {
+        if ($obj1['at'] > $obj2['at']) return 1;
+        if ($obj1['at'] < $obj2['at']) return -1;
+        if ($obj1['job'] > $obj2['job']) return 1;
+        if ($obj1['job'] < $obj2['job']) return -1;
+        return 0;
+    });
 
-    // Output the table
-    echo '<div class="table-container table-border">';
-    echo "<h1>Non-Preemptive Priority</h1>";
-    echo "<table>";
-    echo "<tr><th>Job</th><th>Arrival Time</th><th>Burst Time</th><th>Finish Time</th><th>Turnaround Time</th><th>Waiting Time</th><th>Priority</th></tr>";
-    for ($i = 0; $i < $n; $i++) {
-        echo "<tr><td>{$jobs[$i]['job']}</td><td>{$jobs[$i]['arrivalTime']}</td><td>{$jobs[$i]['burstTime']}</td><td>{$finishTime[$i]}</td><td>{$turnaroundTime[$i]}</td><td>{$waitingTime[$i]}</td><td>{$jobs[$i]['priority']}</td></tr>";
-    }
-    echo "</table>";
+    $averageTAT = array_sum(array_column($solvedProcessesInfo, 'tat')) / count($solvedProcessesInfo);
+    $averageWT = array_sum(array_column($solvedProcessesInfo, 'wat')) / count($solvedProcessesInfo);
 
-     // Output averages
-    echo '<p class="muted">Average Turnaround Time: ' . $averageTurnaroundTime . '</p>' ;
-    echo '<p class="muted">Average Waiting Time: ' . $averageWaitingTime . '</p>' ;
-    echo "</div>";
-
+    return ['solvedProcessesInfo' => $solvedProcessesInfo, 'ganttChartInfo' => $ganttChartInfo, 'averageTAT' => $averageTAT, 'averageWT' => $averageWT];
 }
 
-// Validate and process the form data
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $arrivalTimes = $_POST['arrival_times'];
-    $burstTimes = $_POST['burst_times'];
-    $priorities = $_POST['priorities'];
+// Check if form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Get user input
+    $arrivalTime = preg_split('/[\s,]+/', $_POST['arrivalTime']);
+    $burstTime = preg_split('/[\s,]+/', $_POST['burstTime']);
+    $priorities = preg_split('/[\s,]+/', $_POST['priorities']);
 
-    // Convert input strings to arrays
-    $arrivalTimes = preg_split("/[\s,]+/", $arrivalTimes);
-    $burstTimes = preg_split("/[\s,]+/", $burstTimes);
-    
-    // If priorities input is empty, assume default values of 1 for all priorities
-    if (empty($priorities)) {
-        $priorities = array_fill(0, count($arrivalTimes), 1);
-    } else {
-        $priorities = preg_split("/[\s,]+/", $priorities);
-    }
+    // Convert the values to integers
+    $arrivalTime = array_map('intval', $arrivalTime);
+    $burstTime = array_map('intval', $burstTime);
 
-    // Validate input counts
-    if (count($arrivalTimes) == count($burstTimes) && count($burstTimes) == count($priorities)) {
-        $jobs = [];
-        $n = count($arrivalTimes);
+    // Assume a default priority value of 1 for empty priorities
+    $priorities = array_map(function ($priority) {
+        return empty($priority) ? 1 : $priority;
+    }, $priorities);
 
-        for ($i = 0; $i < $n; $i++) {
-            $jobs[] = [
-                'job' => chr(65 + $i), // Convert to letters A, B, C
-                'arrivalTime' => intval($arrivalTimes[$i]),
-                'burstTime' => intval($burstTimes[$i]),
-                'priority' => intval($priorities[$i]),
-            ];
-        }
+    // Call the scheduling function
+    $result = npp($arrivalTime, $burstTime, $priorities);
 
-        // Call the scheduling function
-        priorityScheduling($jobs);
-    } else {
-        echo "Error: The number of arrival times, burst times, and priorities must be the same.";
-    }
+    // Clear input values after submitting
+    $arrivalTime = [];
+    $burstTime = [];
+    $priorities = [];
+
+} else {
+    // Set default values for input bars
+    $arrivalTime = [];
+    $burstTime = [];
+    $priorities = [];
 }
 ?>
 
+<!-- HTML form for user input -->
+<form method="post" action="">
+    <label for="arrivalTime">Arrival Time:</label>
+    <input type="text" name="arrivalTime" value="<?= implode(',', $arrivalTime) ?>" required>
 
+    <label for="burstTime">Burst Time:</label>
+    <input type="text" name="burstTime" value="<?= implode(',', $burstTime) ?>" required>
 
+    <label for="priorities">Priorities:</label>
+    <input type="text" name="priorities" value="<?= implode(',', $priorities) ?>">
 
+    <button type="submit">Submit</button>
+</form>
+
+<!-- Display the scheduling results -->
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    echo '<table border="1">';
+    echo '<tr><th>Job</th><th>Arrival Time</th><th>Burst Time</th><th>Finish Time</th><th>Turnaround Time</th><th>Waiting Time</th></tr>';
+    foreach ($result['solvedProcessesInfo'] as $process) {
+        echo '<tr>';
+        echo '<td>' . $process['job'] . '</td>';
+        echo '<td>' . $process['at'] . '</td>';
+        echo '<td>' . $process['bt'] . '</td>';
+        echo '<td>' . $process['ft'] . '</td>';
+        echo '<td>' . $process['tat'] . '</td>';
+        echo '<td>' . $process['wat'] . '</td>';
+        echo '</tr>';
+    }
+    echo '</table>';
+
+    echo '<p>Average Turnaround Time: ' . $result['averageTAT'] . '</p>';
+    echo '<p>Average Waiting Time: ' . $result['averageWT'] . '</p>';
+}
+?>
