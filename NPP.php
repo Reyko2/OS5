@@ -52,7 +52,6 @@ function npp($arrivalTime, $burstTime, $priorities) {
     });
 
     $finishTime = [];
-
     $solvedProcessesInfo = [];
     $readyQueue = [];
     $finishedJobs = [];
