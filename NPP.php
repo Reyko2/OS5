@@ -52,7 +52,6 @@ function npp($arrivalTime, $burstTime, $priorities) {
     });
 
     $finishTime = [];
-    $ganttChartInfo = [];
 
     $solvedProcessesInfo = [];
     $readyQueue = [];
@@ -81,11 +80,6 @@ function npp($arrivalTime, $burstTime, $priorities) {
             array_shift($readyQueue);
             $finishedJobs[] = $process;
 
-            $ganttChartInfo[] = [
-                'job' => $process['job'],
-                'start' => $process['at'],
-                'stop' => $finishTime[0],
-            ];
         } else {
             if (empty($readyQueue) && count($finishedJobs) !== count($processesInfo)) {
                 $unfinishedJobs = array_filter($processesInfo, function ($p) use ($finishedJobs) {
@@ -116,19 +110,11 @@ function npp($arrivalTime, $burstTime, $priorities) {
             if ($processToExecute['at'] > $previousFinishTime) {
                 $finishTime[] = $processToExecute['at'] + $processToExecute['bt'];
                 $newestFinishTime = end($finishTime);
-                $ganttChartInfo[] = [
-                    'job' => $processToExecute['job'],
-                    'start' => $processToExecute['at'],
-                    'stop' => $newestFinishTime,
-                ];
+        
             } else {
                 $finishTime[] = $previousFinishTime + $processToExecute['bt'];
                 $newestFinishTime = end($finishTime);
-                $ganttChartInfo[] = [
-                    'job' => $processToExecute['job'],
-                    'start' => $previousFinishTime,
-                    'stop' => $newestFinishTime,
-                ];
+                
             }
 
             $solvedProcessesInfo[] = [
@@ -167,7 +153,7 @@ function npp($arrivalTime, $burstTime, $priorities) {
     $averageTAT = array_sum(array_column($solvedProcessesInfo, 'tat')) / count($solvedProcessesInfo);
     $averageWT = array_sum(array_column($solvedProcessesInfo, 'wat')) / count($solvedProcessesInfo);
 
-    return ['solvedProcessesInfo' => $solvedProcessesInfo, 'ganttChartInfo' => $ganttChartInfo, 'averageTAT' => $averageTAT, 'averageWT' => $averageWT];
+    return ['solvedProcessesInfo' => $solvedProcessesInfo, 'averageTAT' => $averageTAT, 'averageWT' => $averageWT];
 }
 
 // Check if form is submitted
