@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="global.css">
     <link rel="stylesheet" href="reset.css">
-    <title>Disk Scheduling Solver</title>
+    <title>Scan Disk Scheduling Solver</title>
 </head>
 <body>
 <div class="form-container">
@@ -21,7 +21,7 @@
 </div>
 
     <div class="form-container table-border">
-    <h2 class="left-fullw">Disk Scheduling Solver</h2>
+    <h2 class="left-fullw">Scan Disk Scheduling Solver</h2>
     <form id="diskForm" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
         <label for="currentPosition">Current Position:</label>
         <input type="number" name="currentPosition" required>

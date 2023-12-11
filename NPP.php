@@ -1,5 +1,6 @@
 <link rel="stylesheet" href="global.css">
 <link rel="stylesheet" href="reset.css">
+<title>Priority (Non-preemptive)</title>
 
 <div class="form-container">
 <form id="myForm">
@@ -203,6 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!-- HTML form for user input -->
 <form method="post" action="" class="form-container table-border">
+    <h2>NPP Scheduler</h2><br>
     <label for="arrivalTime">Arrival Time:</label>
     <input type="text" name="arrivalTime" value="<?= implode(',', $arrivalTime) ?>" required>
 
@@ -220,6 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo '<div class="table-container table-border">';
     echo '<table>';
+    echo '<h2>Priority (Non-preemptive)</h2>';
     echo '<tr><th>Job</th><th>Arrival Time</th><th>Burst Time</th><th>Finish Time</th><th>Turnaround Time</th><th>Waiting Time</th></tr>';
     foreach ($result['solvedProcessesInfo'] as $process) {
         echo '<tr>';
