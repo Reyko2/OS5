@@ -1,3 +1,25 @@
+<link rel="stylesheet" href="global.css">
+<link rel="stylesheet" href="reset.css">
+
+<div class="form-container">
+<form id="myForm">
+    <label for="algorithm">Select Algorithm:</label>
+    <select class="table-border" id="algorithm" name="algorithm" onchange="javascript:handleSelect(this)">
+        <option value="">Select an option</option>
+        <option value="SCAN">SCAN</option>
+        <option value="SRTF">SRTF</option>
+        <option value="NPP" selected>NPP</option>
+    </select>
+</form>
+</div>
+
+
+<script type="text/javascript">
+        function handleSelect(elm)
+        {
+            window.location = elm.value+".php";
+        }
+</script>
 <?php
 
 function npp($arrivalTime, $burstTime, $priorities) {
@@ -180,7 +202,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <!-- HTML form for user input -->
-<form method="post" action="">
+<form method="post" action="" class="form-container table-border">
     <label for="arrivalTime">Arrival Time:</label>
     <input type="text" name="arrivalTime" value="<?= implode(',', $arrivalTime) ?>" required>
 
@@ -190,13 +212,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <label for="priorities">Priorities:</label>
     <input type="text" name="priorities" value="<?= implode(',', $priorities) ?>">
 
-    <button type="submit">Submit</button>
+    <button type="submit" class="npp-btn">Submit</button>
 </form>
 
 <!-- Display the scheduling results -->
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    echo '<table border="1">';
+    echo '<div class="table-container table-border">';
+    echo '<table>';
     echo '<tr><th>Job</th><th>Arrival Time</th><th>Burst Time</th><th>Finish Time</th><th>Turnaround Time</th><th>Waiting Time</th></tr>';
     foreach ($result['solvedProcessesInfo'] as $process) {
         echo '<tr>';
@@ -208,9 +231,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo '<td>' . $process['wat'] . '</td>';
         echo '</tr>';
     }
-    echo '</table>';
 
-    echo '<p>Average Turnaround Time: ' . $result['averageTAT'] . '</p>';
-    echo '<p>Average Waiting Time: ' . $result['averageWT'] . '</p>';
+    echo '</table>';
+    echo '<p class="muted">Average Turnaround Time: ' . $result['averageTAT'] . '</p>';
+    echo '<p class="muted">Average Waiting Time: ' . $result['averageWT'] . '</p>';
+    echo "</div>";
+
 }
 ?>

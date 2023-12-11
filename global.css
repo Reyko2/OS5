@@ -120,6 +120,16 @@ input[type=submit]{
     margin: 1em 0 1em 0;
 }
 
+.npp-btn {
+    width: 100%;
+    padding: 0.65em;
+    text-align: center;
+    border-radius: 0.55em;
+    background-color: black;
+    color: #fff;
+    margin: 1em 0 1em 0;
+}
+
 /* Scan CSS */
 
 .scan-container {

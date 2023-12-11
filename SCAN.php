@@ -145,7 +145,7 @@
 
             echo '<div class="seek-operations">
             <p class="left-fullw">Seek time</p>
-            <h2 class="left-fullw">'. $seekTime. '</h2>
+            <h2 class="left-fullw" style="--value: 987.654;">'. number_format($seekTime, 3, '.', '') . "s" . '</h2>
             </div>';
 
             // end container        
@@ -179,6 +179,8 @@
             window.location = elm.value+".php";
         }
 </script>
+
+
 
 </body>
 </html>
